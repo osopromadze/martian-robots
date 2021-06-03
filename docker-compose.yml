@@ -16,6 +16,7 @@ services:
     ports:
       - 27017:27017
   martian-robots:
+    build: .
     networks:
       - backend
     image: martian-robots
