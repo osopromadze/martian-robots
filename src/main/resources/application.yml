@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      host: '${MONGO_HOST:localhost}'
+      port: 27017
+      database: '${MONGO_DB:martianrobots}'
+      username: guidesmiths
+      password: martianrobots
