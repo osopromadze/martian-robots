@@ -1,0 +1,26 @@
+version: "3.8"
+
+networks:
+  backend:
+    external: false
+    name: backend
+services:
+  martianrobotsdb:
+    networks:
+      - backend
+    image: mongo:latest
+    container_name: martianrobotsdb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=guidesmiths
+      - MONGO_INITDB_ROOT_PASSWORD=martianrobots
+    ports:
+      - 27017:27017
+  martian-robots:
+    networks:
+      - backend
+    image: martian-robots
+    container_name: martian-robots
+    ports:
+      - 8080:8080
+    links:
+      - martianrobotsdb
