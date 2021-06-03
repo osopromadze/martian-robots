@@ -1,26 +1,48 @@
 package com.guidesmiths.martian_robot.service;
 
+import com.guidesmiths.martian_robot.dto.DataDto;
+import com.guidesmiths.martian_robot.dto.GetInputOutputResponse;
+import com.guidesmiths.martian_robot.dto.HRef;
+import com.guidesmiths.martian_robot.dto.InputOutputDto;
+import com.guidesmiths.martian_robot.dto.Links;
+import com.guidesmiths.martian_robot.entity.InputOutput;
 import com.guidesmiths.martian_robot.exception.AppException;
 import com.guidesmiths.martian_robot.logic.Instruction;
 import com.guidesmiths.martian_robot.logic.Location;
 import com.guidesmiths.martian_robot.logic.Mars;
 import com.guidesmiths.martian_robot.logic.Orientation;
 import com.guidesmiths.martian_robot.logic.Robot;
+import com.guidesmiths.martian_robot.repository.InputOutputRepository;
+import com.guidesmiths.martian_robot.web.RobotController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 public class RobotService {
+
+    private final InputOutputRepository inputOutputRepository;
+
+    public RobotService(InputOutputRepository inputOutputRepository) {
+        this.inputOutputRepository = inputOutputRepository;
+    }
 
     public String moveRobots(List<String> inputLines) {
         List<Robot> robotList = createRobotList(inputLines);
 
         StringBuilder output = new StringBuilder();
 
-        for(Robot robot: robotList) {
+        for(Robot robot : robotList) {
             robot.move();
 
             output.append(robot.getLocation().getX());
@@ -85,7 +107,7 @@ public class RobotService {
 
         try {
             robotLocationX = Integer.parseInt(robotLocation[0]);
-            robotLocationY= Integer.parseInt(robotLocation[1]);
+            robotLocationY = Integer.parseInt(robotLocation[1]);
         } catch (NumberFormatException e) {
             throw new AppException("Invalid robot positions - " + Arrays.toString(robotLocation));
         }
@@ -113,7 +135,7 @@ public class RobotService {
 
         try {
             marsSizeX = Integer.parseInt(marsSizeArray[0]);
-            marsSizeY= Integer.parseInt(marsSizeArray[1]);
+            marsSizeY = Integer.parseInt(marsSizeArray[1]);
         } catch (NumberFormatException e) {
             throw new AppException("Invalid mars coordinates - " + Arrays.toString(marsSizeArray));
         }
@@ -122,5 +144,66 @@ public class RobotService {
                 .sizeX(marsSizeX)
                 .sizeY(marsSizeY)
                 .build();
+    }
+
+    public GetInputOutputResponse getInputOutputs(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        Page<InputOutput> all = inputOutputRepository.findAll(pageable);
+
+        if(all.getNumberOfElements() == 0) {
+            throw new AppException("No results found", HttpStatus.NOT_FOUND);
+        }
+
+        List<InputOutputDto> inputOutputList = all.stream()
+                .map(d -> InputOutputDto.builder()
+                        .input(d.getInput())
+                        .output(d.getOutput())
+                        .build())
+                .collect(Collectors.toList());
+
+        Links links = getLinks(page, size, all.getTotalPages());
+
+        return GetInputOutputResponse.builder()
+                .data(DataDto.builder()
+                        .inputOutputList(inputOutputList)
+                        .build())
+                .links(links)
+                .build();
+    }
+
+    private Links getLinks(int page, int size, int totalPages) {
+        String uriFirst = buildUri(1, size);
+        HRef first = HRef.builder().href(uriFirst).build();
+
+        String uriLast = buildUri(totalPages, size);
+        HRef last = HRef.builder().href(uriLast).build();
+
+        HRef next = null;
+        HRef prev = null;
+
+        if(page > 1) {
+            String uriPrev = buildUri(page - 1, size);
+            prev = HRef.builder().href(uriPrev).build();
+        }
+
+        if(page != totalPages) {
+            String uriNext = buildUri(page + 1, size);
+            next = HRef.builder().href(uriNext).build();
+        }
+
+        return Links.builder()
+                .first(first)
+                .next(next)
+                .prev(prev)
+                .last(last)
+                .build();
+    }
+
+    private String buildUri(int page, int size) {
+        return linkTo(
+                methodOn(RobotController.class)
+                        .getInputOutput(String.valueOf(page), String.valueOf(size))
+        ).toUriComponentsBuilder().toUriString();
     }
 }

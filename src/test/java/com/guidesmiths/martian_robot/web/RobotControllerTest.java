@@ -1,6 +1,6 @@
 package com.guidesmiths.martian_robot.web;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.guidesmiths.martian_robot.repository.InputOutputRepository;
 import com.guidesmiths.martian_robot.service.RobotService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,29 +11,25 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileUrlResource;
-import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doCallRealMethod;
 
 @WebFluxTest(value = {RobotController.class},
         excludeAutoConfiguration = {ReactiveSecurityAutoConfiguration.class})
+@TestPropertySource(properties = {
+        "size.max=10"
+})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RobotControllerTest {
 
@@ -43,9 +39,10 @@ class RobotControllerTest {
     @MockBean
     private RobotService robotService;
 
-    private WebTestClient testClient;
+    @MockBean
+    private InputOutputRepository inputOutputRepository;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private WebTestClient testClient;
 
     @BeforeAll
     void init() {

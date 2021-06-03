@@ -1,25 +1,41 @@
 package com.guidesmiths.martian_robot.web;
 
+import com.guidesmiths.martian_robot.dto.GetInputOutputResponse;
+import com.guidesmiths.martian_robot.entity.InputOutput;
+import com.guidesmiths.martian_robot.repository.InputOutputRepository;
 import com.guidesmiths.martian_robot.service.RobotService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/martian-robots")
 public class RobotController {
 
     private final RobotService robotService;
+    private final Integer maxSize;
+    private final InputOutputRepository inputOutputRepository;
 
-    public RobotController(RobotService robotService) {
+    public RobotController(RobotService robotService,
+                           @Value("${size.max}") Integer maxSize,
+                           InputOutputRepository inputOutputRepository) {
         this.robotService = robotService;
+        this.maxSize = maxSize;
+        this.inputOutputRepository = inputOutputRepository;
     }
 
     @PostMapping(path = "/move", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
@@ -35,7 +51,49 @@ public class RobotController {
 
         String responseBody = robotService.moveRobots(inputLines);
 
+        InputOutput entity = InputOutput.builder()
+                .input(body)
+                .output(responseBody)
+                .build();
+
+        inputOutputRepository.save(entity);
+
         return ResponseEntity.ok(responseBody);
+    }
+
+    @GetMapping(path = "/get-input-output", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GetInputOutputResponse> getInputOutput(
+            @RequestParam(value = "_page", required = false) String page,
+            @RequestParam(value = "_size", required = false) String size
+    ) {
+
+        int realPage = getRealPage(page);
+        int realSize = getRealSize(size);
+
+        GetInputOutputResponse responseBody = robotService.getInputOutputs(realPage, realSize);
+
+        return ResponseEntity.ok(responseBody);
+    }
+
+    private int getRealPage(String page) {
+
+        // if page equals to null or it is not numeric
+        // return default 1
+        return Optional.ofNullable(page)
+                .filter(p -> StringUtils.isNumeric(p))
+                .map(p -> Integer.parseInt(p))
+                .orElse(1);
+    }
+
+    private int getRealSize(String size) {
+
+        // if page equals to null or it is not numeric or it is greater than maxSize defined in properties
+        // return default maxSize
+        return Optional.ofNullable(size)
+                .filter(s -> StringUtils.isNumeric(s))
+                .map(s -> Integer.parseInt(s))
+                .filter(s -> s < maxSize)
+                .orElse(maxSize);
     }
 
     private boolean validateInputLines(List<String> inputLines) {
