@@ -23,7 +23,7 @@ public class Robot {
     private boolean isLost;
     private String instructions;
 
-    private final Map<Instruction, Movement> movementMap = new HashMap<Instruction, Movement>(){{
+    private final Map<Instruction, Movement> movementMap = new HashMap<Instruction, Movement>() {{
         put(Instruction.R, new RightMovement());
         put(Instruction.L, new LeftMovement());
         put(Instruction.F, new ForwardMovement());
@@ -62,10 +62,12 @@ public class Robot {
             }
 
             movementMap.get(instruction).move(this);
+
+            checkIfRobotLost();
         }
     }
 
-    public void checkIfRobotLost() {
+    private void checkIfRobotLost() {
         isLost = location.getX() > mars.getSizeX()
                 || location.getX() < 0
                 || location.getY() > mars.getSizeY()

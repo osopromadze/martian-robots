@@ -29,7 +29,5 @@ public class ForwardMovement extends Movement {
                 robot.getLocation().decrementX();
                 break;
         }
-
-        robot.checkIfRobotLost();
     }
 }

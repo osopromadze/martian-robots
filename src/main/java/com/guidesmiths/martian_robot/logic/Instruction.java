@@ -7,8 +7,8 @@ public enum Instruction {
 
     public static boolean contains(String instruction) {
 
-        for (Instruction i : Instruction.values()) {
-            if (i.name().equals(instruction)) {
+        for(Instruction i : Instruction.values()) {
+            if(i.name().equals(instruction)) {
                 return true;
             }
         }
