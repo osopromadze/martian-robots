@@ -1,0 +1,62 @@
+{
+    "_data": {
+        "inputOutputList": [
+            {
+                "input": "5 3\r\n1 1 E\r\nRFRFRFRF\r\n3 2 N\r\nFRRFLLFFRRFLL\r\n0 3 W\r\nLLFFFLFLFL",
+                "output": "1 1 E\n3 3 N LOST\n2 3 S\n",
+                "robotsCount": 3,
+                "lostRobotsCount": 1,
+                "mars": {
+                    "sizeX": 5,
+                    "sizeY": 3
+                },
+                "robots": [
+                    {
+                        "location": {
+                            "x": 1,
+                            "y": 1
+                        },
+                        "currentOrientation": "E",
+                        "instructions": "RFRFRFRF",
+                        "lost": false
+                    },
+                    {
+                        "location": {
+                            "x": 3,
+                            "y": 3
+                        },
+                        "currentOrientation": "N",
+                        "instructions": "FRRFLLFFRRFLL",
+                        "lost": true
+                    },
+                    {
+                        "location": {
+                            "x": 2,
+                            "y": 3
+                        },
+                        "currentOrientation": "S",
+                        "instructions": "LLFFFLFLFL",
+                        "lost": false
+                    }
+                ],
+                "scents": [
+                    {
+                        "location": {
+                            "x": 3,
+                            "y": 3
+                        },
+                        "orientation": "N"
+                    }
+                ]
+            }
+        ]
+    },
+    "_links": {
+        "_first": {
+            "href": "http://localhost:8080/martian-robots/get-input-output?_page=1&_size=1"
+        },
+        "_last": {
+            "href": "http://localhost:8080/martian-robots/get-input-output?_page=1&_size=1"
+        }
+    }
+}
