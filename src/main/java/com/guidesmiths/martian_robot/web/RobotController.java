@@ -1,6 +1,7 @@
 package com.guidesmiths.martian_robot.web;
 
 import com.guidesmiths.martian_robot.dto.GetInputOutputResponse;
+import com.guidesmiths.martian_robot.dto.InputOutputDto;
 import com.guidesmiths.martian_robot.entity.InputOutput;
 import com.guidesmiths.martian_robot.repository.InputOutputRepository;
 import com.guidesmiths.martian_robot.service.RobotService;
@@ -38,7 +39,7 @@ public class RobotController {
         this.inputOutputRepository = inputOutputRepository;
     }
 
-    @PostMapping(path = "/move", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(path = "/move-robots", consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> moveRobot(@RequestBody() String body) {
 
         List<String> inputLines = Arrays.stream(body.split("\r\n")).collect(Collectors.toList());
@@ -49,11 +50,19 @@ public class RobotController {
             return ResponseEntity.badRequest().body("Invalid input");
         }
 
-        String responseBody = robotService.moveRobots(inputLines);
+        // create dto and set its values in service
+        InputOutputDto inputOutputDto = new InputOutputDto();
+
+        String responseBody = robotService.moveRobots(inputLines, inputOutputDto);
 
         InputOutput entity = InputOutput.builder()
                 .input(body)
                 .output(responseBody)
+                .robotsCount(inputOutputDto.getRobotsCount())
+                .lostRobotsCount(inputOutputDto.getLostRobotsCount())
+                .mars(inputOutputDto.getMars())
+                .robots(inputOutputDto.getRobots())
+                .scents(inputOutputDto.getScents())
                 .build();
 
         inputOutputRepository.save(entity);

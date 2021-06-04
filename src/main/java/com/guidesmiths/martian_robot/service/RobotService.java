@@ -5,6 +5,8 @@ import com.guidesmiths.martian_robot.dto.GetInputOutputResponse;
 import com.guidesmiths.martian_robot.dto.HRef;
 import com.guidesmiths.martian_robot.dto.InputOutputDto;
 import com.guidesmiths.martian_robot.dto.Links;
+import com.guidesmiths.martian_robot.dto.MarsDto;
+import com.guidesmiths.martian_robot.dto.RobotDto;
 import com.guidesmiths.martian_robot.entity.InputOutput;
 import com.guidesmiths.martian_robot.exception.AppException;
 import com.guidesmiths.martian_robot.logic.Instruction;
@@ -37,8 +39,11 @@ public class RobotService {
         this.inputOutputRepository = inputOutputRepository;
     }
 
-    public String moveRobots(List<String> inputLines) {
-        List<Robot> robotList = createRobotList(inputLines);
+    public String moveRobots(List<String> inputLines, InputOutputDto inputOutputDto) {
+
+        Mars mars = createMars(inputLines.get(0));
+
+        List<Robot> robotList = createRobotList(inputLines, mars);
 
         StringBuilder output = new StringBuilder();
 
@@ -59,14 +64,38 @@ public class RobotService {
             output.append("\n");
         }
 
+        // set fields to inputOutputDto and for saving it later
+        inputOutputDto.setRobotsCount(robotList.size());
+
+        long lostRobotsCount = robotList.stream().filter(r -> r.isLost()).count();
+
+        inputOutputDto.setLostRobotsCount(lostRobotsCount);
+
+        MarsDto marsDto = MarsDto.builder()
+                .sizeX(mars.getSizeX())
+                .sizeY(mars.getSizeY())
+                .build();
+
+        inputOutputDto.setMars(marsDto);
+
+        List<RobotDto> robotDtoList = robotList.stream()
+                .map(r -> RobotDto.builder()
+                        .location(r.getLocation())
+                        .currentOrientation(r.getCurrentOrientation())
+                        .isLost(r.isLost())
+                        .instructions(r.getInstructions())
+                        .build())
+                .collect(Collectors.toList());
+
+        inputOutputDto.setRobots(robotDtoList);
+        inputOutputDto.setScents(mars.getScents());
+
         return output.toString();
     }
 
-    private List<Robot> createRobotList(List<String> inputLines) {
+    private List<Robot> createRobotList(List<String> inputLines, Mars mars) {
 
         List<Robot> robotList = new ArrayList<>();
-
-        Mars mars = createMars(inputLines.get(0));
 
         for(int i = 1; i < inputLines.size(); i += 2) {
             String[] robotLocation = inputLines.get(i).split(" ");
@@ -159,6 +188,11 @@ public class RobotService {
                 .map(d -> InputOutputDto.builder()
                         .input(d.getInput())
                         .output(d.getOutput())
+                        .robotsCount(d.getRobotsCount())
+                        .lostRobotsCount(d.getLostRobotsCount())
+                        .mars(d.getMars())
+                        .robots(d.getRobots())
+                        .scents(d.getScents())
                         .build())
                 .collect(Collectors.toList());
 

@@ -1,5 +1,6 @@
 package com.guidesmiths.martian_robot.web;
 
+import com.guidesmiths.martian_robot.dto.InputOutputDto;
 import com.guidesmiths.martian_robot.repository.InputOutputRepository;
 import com.guidesmiths.martian_robot.service.RobotService;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,6 +23,7 @@ import java.net.URL;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doCallRealMethod;
 
@@ -55,12 +57,12 @@ class RobotControllerTest {
     @Test
     void okForSampleInputTest() throws MalformedURLException {
 
-        doCallRealMethod().when(robotService).moveRobots(anyList());
+        doCallRealMethod().when(robotService).moveRobots(anyList(), any(InputOutputDto.class));
 
         URL fileUrl = new URL("file:src/test/resources/files/sample-input.txt");
 
         EntityExchangeResult<String> response = testClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move")
+                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move-robots")
                         .build())
                 .body(BodyInserters.fromResource(new FileUrlResource(fileUrl)))
                 .exchange()
@@ -82,7 +84,7 @@ class RobotControllerTest {
         URL fileUrl = new URL("file:src/test/resources/files/invalid-line-count.txt");
 
         EntityExchangeResult<String> response = testClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move")
+                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move-robots")
                         .build())
                 .body(BodyInserters.fromResource(new FileUrlResource(fileUrl)))
                 .exchange()
@@ -99,7 +101,7 @@ class RobotControllerTest {
         URL fileUrl = new URL("file:src/test/resources/files/invalid-mars-coordinates.txt");
 
         EntityExchangeResult<String> response = testClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move")
+                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move-robots")
                         .build())
                 .body(BodyInserters.fromResource(new FileUrlResource(fileUrl)))
                 .exchange()
@@ -116,7 +118,7 @@ class RobotControllerTest {
         URL fileUrl = new URL("file:src/test/resources/files/invalid-robot-positions.txt");
 
         EntityExchangeResult<String> response = testClient.post()
-                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move")
+                .uri(uriBuilder -> uriBuilder.path("/martian-robots/move-robots")
                         .build())
                 .body(BodyInserters.fromResource(new FileUrlResource(fileUrl)))
                 .exchange()
