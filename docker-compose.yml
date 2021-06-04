@@ -19,7 +19,7 @@ services:
     build: .
     networks:
       - backend
-    image: martian-robots
+    image: 'coma123/martian-robots:latest'
     container_name: martian-robots
     ports:
       - 8080:8080
