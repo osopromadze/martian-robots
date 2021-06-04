@@ -1,12 +1,12 @@
 # Martian Robots
 
-Live version of app is deployed on azure https://guidesmiths-martian-robots.azurewebsites.net.
+Live version of app is deployed on azure https://guidesmiths-martian-robots.azurewebsites.net
 
 It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. It can be imported in postman.
 
  - POST /martian-robots/move-robots which receives request body as plain text with input and after successful validations makes output of robot positions. Also saves related information in Mongo.
 
- - GET /martian-robots/get-input-output which will list all input-outputs, optionally receives query parameters "_page" and "_size" for pagination.
+ - GET /martian-robots/get-input-output which will list all input-outputs, optionally receives query parameters "_page" and "_size" for pagination. Sample output JSON can be found [HERE](https://github.com/osopromadze/martian-robots/blob/main/files/sample-ouput.json)
 
 ## Requirements
  - Java 8 or higher
