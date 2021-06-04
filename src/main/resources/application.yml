@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      host: 'localhost:27017'
+      host: 'martianrobotsdb:27017'
       database: martianrobots
       username: guidesmiths
       password: martianrobots
