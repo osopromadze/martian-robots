@@ -1,5 +1,7 @@
 # Martian Robots
 
+This is my solution for ```Martian Robots``` challenge.
+
 Live version of app is deployed on azure https://guidesmiths-martian-robots.azurewebsites.net
 
 It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. It can be imported in postman.
