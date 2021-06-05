@@ -14,6 +14,18 @@ It has 2 endpoints and postman collection fot testing can be found here https://
 
 ![Sample POST Request](https://raw.githubusercontent.com/osopromadze/martian-robots/main/files/POST%20Request.png?raw=true "Sample POST Request")
 
+### Package structure
+```bash
+├── com.guidesmiths.martian_robot
+│   ├── dto 
+│   ├── entity // Database entity
+│   ├── exception // Here is included @ControllerAdvice to catch thrown AppException
+│   ├── logic // Robot movement logic
+│   ├── repository // Database connection to save and get entities
+│   ├── service // Services which are used from controller
+│   └── web // Controller to map incoming requests 
+```
+
 ## Requirements
  - Java 8 or higher
  - Maven
