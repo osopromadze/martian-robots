@@ -4,9 +4,9 @@ This is my solution for ```Martian Robots``` challenge.
 
 Live version of app is deployed in azure https://guidesmiths-martian-robots.azurewebsites.net
 
-It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. Also can be tested by cURL, for example ```curl -X POST -H "Content-Type: text/plain" --data-binary "@./sample-input.txt" "https://guidesmiths-martian-robots.azurewebsites.net/martian-robots/move-robots"```, just needed to have ```sample-input.txt``` with desired input text.
+It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. Also can be tested by cURL, for example ```curl -X POST -H "Content-Type: text/plain" --data-binary "@./sample-input.txt" "https://guidesmiths-martian-robots.azurewebsites.net/martian-robots/move-robots"```, just needed to have [sample-input.txt](https://github.com/osopromadze/martian-robots/blob/main/files/sample-input.txt) with desired input text.
 
- - **POST** ```/martian-robots/move-robots``` which receives request body as plain text with input and after successful validations makes output of robot positions. Also saves related information in Mongo.
+ - **POST** ```/martian-robots/move-robots``` which receives input as request body in plain/text. Validates input format and after calculation makes output of robot positions. Also saves related information in Mongo.
 
  - **GET** ```/martian-robots/get-input-output``` which will list all input-outputs, optionally receives query parameters "_page" and "_size" for pagination. Sample output JSON can be found [HERE](https://github.com/osopromadze/martian-robots/blob/main/files/sample-ouput.json)
 
@@ -17,12 +17,12 @@ It has 2 endpoints and postman collection fot testing can be found here https://
 ## Requirements
  - Java 8 or higher
  - Maven
- - Docker
+ - Docker (If needed, image can be found [here on docker hub](https://hub.docker.com/r/coma123/martian-robots))
 ### Usage
 
 Step 1: clone repository and go inside folder
 ```
-git clone https://github.com/gsrai/martian-robots.git
+git clone https://github.com/osopromadze/martian-robots.git
 
 cd martian-robots
 ```
