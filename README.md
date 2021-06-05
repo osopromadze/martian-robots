@@ -2,7 +2,7 @@
 
 This is my solution for ```Martian Robots``` challenge.
 
-Live version of app is deployed on azure https://guidesmiths-martian-robots.azurewebsites.net
+Live version of app is deployed in azure https://guidesmiths-martian-robots.azurewebsites.net
 
 It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. Also can be tested by cURL, for example ```curl -X POST -H "Content-Type: text/plain" --data-binary "@./sample-input.txt" "https://guidesmiths-martian-robots.azurewebsites.net/martian-robots/move-robots"```, just needed to have ```sample-input.txt``` with desired input text.
 
