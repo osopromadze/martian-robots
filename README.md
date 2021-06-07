@@ -4,7 +4,7 @@ This is my solution for ```Martian Robots``` challenge.
 
 Live version of app is deployed in heroku https://evening-bastion-83222.herokuapp.com/
 
-It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. Also can be tested by cURL, for example ```curl -X POST -H "Content-Type: text/plain" --data-binary "@./sample-input.txt" "https://guidesmiths-martian-robots.azurewebsites.net/martian-robots/move-robots"```, just needed to have [sample-input.txt](https://github.com/osopromadze/martian-robots/blob/main/files/sample-input.txt) with desired input text.
+It has 2 endpoints and postman collection fot testing can be found here https://www.getpostman.com/collections/ba79d35a972fd8859f3e. Also can be tested by cURL, for example ```curl -X POST -H "Content-Type: text/plain" --data-binary "@./sample-input.txt" "https://evening-bastion-83222.herokuapp.com/martian-robots/move-robots"```, just needed to have [sample-input.txt](https://github.com/osopromadze/martian-robots/blob/main/files/sample-input.txt) with desired input text.
 
  - **POST** ```/martian-robots/move-robots``` which receives input as request body in plain/text. Validates input format and after calculation makes output of robot positions. Also saves related information in Mongo.
 
