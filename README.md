@@ -12,7 +12,7 @@ It has 2 endpoints and postman collection fot testing can be found here https://
 
 ### Sample POST Request
 
-![Sample POST Request](https://raw.githubusercontent.com/osopromadze/martian-robots/main/files/POST%20Request.png?raw=true "Sample POST Request")
+![Sample POST Request](https://raw.githubusercontent.com/osopromadze/martian-robots/main/files/POST%20Request%20Sample.png?raw=true "Sample POST Request")
 
 ### Package structure
 ```bash
